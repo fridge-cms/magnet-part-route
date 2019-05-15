@@ -1,3 +1,11 @@
+const Route = ({ pattern, content }) => (
+  <span>
+    {pattern.replace(/{(\w*)}/g, (m, key) =>
+      content.hasOwnProperty(key) ? content[key] : ""
+    )}
+  </span>
+);
+
 const part = {
   name: "Route",
   group: "Content",
@@ -9,15 +17,10 @@ const part = {
   },
   schema: part => ({
     type: "string",
-    component: () => {
-      return <div />;
-    },
-    render: ({ content }) => {
-      const url = part.pattern.replace(/{(\w*)}/g, (m, key) =>
-        content.hasOwnProperty(key) ? content[key] : ""
-      );
-      return <span>{url}</span>;
-    }
+    component: ({ config: { content } }) => (
+      <Route pattern={part.pattern} content={content} />
+    ),
+    render: ({ content }) => <Route pattern={part.pattern} content={content} />
   })
 };
 
